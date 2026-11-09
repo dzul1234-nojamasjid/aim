@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Deepavali</title>
+<style>
+  :root{
+    --bg1:#1a0b2e; --bg2:#2d1b4e; --gold:#ffd700; --gold2:#ffb347;
+    --text:#fff8e7; --card-bg:rgba(30,15,60,0.85); --accent:#ff6b35;
+    --glow:0 0 20px rgba(255,215,0,0.5);
+  }
+  body.light{
+    --bg1:#fff4e6; --bg2:#ffe0c2; --gold:#c8860d; --gold2:#e6a23c;
+    --text:#4a2c00; --card-bg:rgba(255,250,240,0.92); --accent:#d9480f;
+    --glow:0 0 15px rgba(200,134,13,0.4);
+  }
+  body.dim{
+    --bg1:#0f0a1a; --bg2:#1a1230; --gold:#b8963a; --gold2:#a07830;
+    --text:#d4c4a8; --card-bg:rgba(20,12,35,0.9); --accent:#b05020;
+    --glow:0 0 12px rgba(180,150,60,0.3);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at 50% 30%, var(--bg2), var(--bg1) 70%);
+    color:var(--text); overflow:hidden; transition:background 0.8s, color 0.8s;
+    perspective:1200px;
+  }
+  .diya-field{position:fixed;inset:0;pointer-events:none;z-index:0;}
+  .diya{
+    position:absolute; width:14px; height:14px; border-radius:50%;
+    background:radial-gradient(circle, #fff 0%, var(--gold) 35%, var(--accent) 70%, transparent 100%);
+    box-shadow:0 0 12px var(--gold), 0 0 24px var(--accent);
+    animation:flicker 2s infinite alternate ease-in-out;
+  }
+  @keyframes flicker{
+    0%{opacity:0.6; transform:scale(0.9);}
+    100%{opacity:1; transform:scale(1.15);}
+  }
+  #fw{position:fixed;inset:0;pointer-events:none;z-index:1;}
+  .scene{position:relative;z-index:2;perspective:1500px;}
+  .card{
+    width:min(92vw,480px); padding:38px 30px 32px;
+    background:var(--card-bg); border-radius:24px;
+    border:2px solid var(--gold);
+    box-shadow:0 0 40px rgba(255,180,0,0.25), inset 0 0 40px rgba(255,180,0,0.05);
+    transform-style:preserve-3d;
+    transition:transform 0.15s ease-out, background 0.8s, border-color 0.8s;
+    animation:float 6s ease-in-out infinite;
+    text-align:center; position:relative;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotateY(0deg);}
+    50%{transform:translateY(-12px) rotateY(3deg);}
+  }
+  .card::before{
+    content:''; position:absolute; inset:-3px; border-radius:26px;
+    background:linear-gradient(135deg, var(--gold), transparent, var(--accent), transparent, var(--gold));
+    background-size:300% 300%; z-index:-1; opacity:0.6;
+    animation:borderFlow 5s linear infinite;
+  }
+  @keyframes borderFlow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  h1{
+    font-size:clamp(1.8rem,6vw,2.4rem); letter-spacing:1px; margin-top:10px;
+    background:linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:20px;
+    text-shadow: 0 0 20px rgba(255,215,0,0.3);
+  }
+  .msg{
+    font-size:1.05rem; line-height:1.7; margin-bottom:22px;
+    padding:18px 20px; background:rgba(255,180,0,0.08);
+    border-radius:14px; border:1px solid rgba(255,180,0,0.2);
+    text-align:left;
+  }
+  .msg b{color:var(--gold);}
+  .footer{
+    font-size:0.85rem; opacity:0.8; line-height:1.6;
+    border-top:1px solid rgba(255,180,0,0.25); padding-top:14px; margin-top:6px;
+  }
+  .footer .respect{font-size:0.75rem; font-style:italic; opacity:0.6; margin-top:8px;}
+  .controls{
+    position:fixed; top:16px; right:16px; z-index:10;
+    display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+  }
+  .btn{
+    width:42px; height:42px; border-radius:12px; cursor:pointer;
+    border:1px solid var(--gold); background:var(--card-bg); color:var(--gold);
+    font-size:18px; display:flex; align-items:center; justify-content:center;
+    transition:all 0.3s; backdrop-filter:blur(6px);
+  }
+  .btn:hover{transform:scale(1.12); box-shadow:var(--glow);}
+  .btn.active{background:var(--gold); color:var(--bg1);}
+  .sparkle{position:absolute;pointer-events:none;color:var(--gold);font-size:12px;animation:sparkleUp 3s linear forwards;z-index:3;}
+  @keyframes sparkleUp{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-120px) scale(0.2);}}
+  .lamp-scene{perspective:600px; margin:0 auto 10px; width:80px; height:60px;}
+  .lamp{
+    position:relative; width:60px; height:30px; margin:0 auto;
+    background:linear-gradient(180deg, #c8860d, #8a5a00);
+    border-radius:0 0 30px 30px; transform:rotateX(25deg);
+    box-shadow:0 8px 20px rgba(0,0,0,0.5);
+  }
+  .flame{
+    position:absolute; top:-26px; left:50%; transform:translateX(-50%);
+    width:16px; height:30px;
+    background:radial-gradient(ellipse at 50% 80%, #fff 0%, #ffd700 30%, #ff6b35 60%, transparent 100%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation:flameDance 0.8s infinite alternate ease-in-out;
+    filter:drop-shadow(0 0 10px #ffb347);
+  }
+  @keyframes flameDance{
+    0%{transform:translateX(-50%) scale(1) rotate(-2deg);}
+    100%{transform:translateX(-50%) scale(1.1) rotate(2deg);}
+  }
+  @media(max-width:480px){
+    .card{padding:28px 18px 24px;}
+    .msg{font-size:0.95rem;}
+  }
+</style>
+</head>
+<body class="dark">
+<canvas id="fw"></canvas>
+<div class="diya-field" id="diyaField"></div>
+
+<div class="controls">
+  <button class="btn" id="themeBtn" title="Change Theme">🌙</button>
+  <button class="btn active" id="soundBtn" title="Music On/Off">🔊</button>
+  <button class="btn" id="fwBtn" title="Fireworks On/Off">🎆</button>
+</div>
+
+<div class="scene">
+  <div class="card" id="card">
+    <div class="lamp-scene">
+      <div class="lamp"><div class="flame"></div></div>
+    </div>
+    
+    <h1>Happy Deepavali</h1>
+
+    <div class="msg">
+      Wishing you and your family a very <b>Happy Deepavali</b>. May the Festival of Lights fill your home with <b>joy, peace, good health, and endless prosperity</b>. Have a wonderful celebration!
+    </div>
+
+    <div class="footer">
+      Warmest wishes,<br>
+      <b>dzul 🪔✨</b>
+      <div class="respect">
+        Sent with utmost respect and warm regards.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== THEME TOGGLE ===== */
+const themes=['dark','light','dim'];
+const icons={dark:'🌙',light:'☀️',dim:'🌆'};
+let tIdx=0;
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.onclick=()=>{
+  tIdx=(tIdx+1)%3;
+  document.body.className=themes[tIdx];
+  themeBtn.textContent=icons[themes[tIdx]];
+};
+
+/* ===== 3D TILT ON MOUSE ===== */
+const card=document.getElementById('card');
+document.addEventListener('mousemove',e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*18;
+  const y=(e.clientY/window.innerHeight-0.5)*-18;
+  card.style.transform=`rotateY(${x}deg) rotateX(${y}deg) translateY(-6px)`;
+});
+document.addEventListener('mouseleave',()=>{
+  card.style.transform='';
+});
+
+/* ===== DIYA LIGHTS FIELD ===== */
+const field=document.getElementById('diyaField');
+for(let i=0;i<40;i++){
+  const d=document.createElement('div');
+  d.className='diya';
+  d.style.left=Math.random()*100+'%';
+  d.style.top=Math.random()*100+'%';
+  d.style.animationDelay=(Math.random()*2)+'s';
+  d.style.animationDuration=(1.5+Math.random()*2)+'s';
+  const s=0.5+Math.random()*0.9;
+  d.style.transform=`scale(${s})`;
+  field.appendChild(d);
+}
+
+/* ===== FIREWORKS ===== */
+const canvas=document.getElementById('fw');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+resize();addEventListener('resize',resize);
+
+const COLORS=['#ffd700','#ff6b35','#ff4d6d','#4dabf7','#69db7c','#da77f2','#ffa94d'];
+let particles=[];
+let fwOn=true;
+
+class Particle{
+  constructor(x,y,color){
+    this.x=x;this.y=y;this.color=color;
+    const ang=Math.random()*Math.PI*2;
+    const sp=2+Math.random()*4;
+    this.vx=Math.cos(ang)*sp;
+    this.vy=Math.sin(ang)*sp;
+    this.life=1;
+    this.decay=0.012+Math.random()*0.015;
+    this.size=1.5+Math.random()*2;
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    this.vx*=0.98;this.vy*=0.98;
+    this.vy+=0.04;
+    this.life-=this.decay;
+  }
+  draw(){
+    ctx.globalAlpha=Math.max(this.life,0);
+    ctx.fillStyle=this.color;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  }
+}
+function burst(x,y){
+  const n=40+Math.floor(Math.random()*30);
+  const baseColor=COLORS[Math.floor(Math.random()*COLORS.length)];
+  for(let i=0;i<n;i++){
+    particles.push(new Particle(x,y,Math.random()<0.5?baseColor:COLORS[Math.floor(Math.random()*COLORS.length)]));
+  }
+  playSparkleSound();
+}
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=particles.length-1;i>=0;i--){
+    particles[i].update();
+    particles[i].draw();
+    if(particles[i].life<=0)particles.splice(i,1);
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+
+setInterval(()=>{
+  if(fwOn) burst(Math.random()*W*0.8+W*0.1, Math.random()*H*0.4);
+},1400);
+setTimeout(()=>{if(fwOn)burst(W/2,H*0.3);},300);
+
+document.getElementById('fwBtn').onclick=function(){
+  fwOn=!fwOn;
+  this.classList.toggle('active',fwOn);
+  if(fwOn)burst(W/2,H*0.35);
+};
+
+/* ===== AUDIO: 3 DIFFERENT MELODIES (Randomly combined) ===== */
+let audioCtx=null, musicOn=true, musicTimer=null;
+const soundBtn=document.getElementById('soundBtn');
+
+function initAudio(){
+  if(audioCtx)return;
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+}
+
+// Skala Raga India (Kafi, Bhairavi, Asavari)
+const scales = [
+  [261.63, 293.66, 311.13, 349.23, 392.00, 440.00, 466.16, 523.25], // Raga Kafi
+  [261.63, 277.18, 311.13, 349.23, 392.00, 415.30, 466.16, 523.25], // Raga Bhairavi
+  [261.63, 293.66, 311.13, 349.23, 392.00, 415.30, 466.16, 523.25]  // Raga Asavari
+];
+
+// 3 corak melodi berbeza
+const melodies = [
+  [0, 2, 4, 2, 1, 0, 1, 2, 4, 5, 4, 2, 1, 0, 0, 0],
+  [0, 1, 2, 3, 4, 3, 2, 1, 0, 2, 4, 5, 6, 5, 4, 2],
+  [0, 2, 3, 4, 3, 2, 0, 1, 2, 3, 4, 5, 4, 3, 2, 0]
+];
+
+function playPluck(freq, when, vol=0.12){
+  const osc=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  osc.type='triangle'; 
+  osc.frequency.setValueAtTime(freq, when);
+  osc.frequency.exponentialRampToValueAtTime(freq*0.98, when+0.2);
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(vol, when+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, when+1.2);
+  osc.connect(g); g.connect(audioCtx.destination);
+  osc.start(when); osc.stop(when+1.3);
+}
+
+function playFlute(freq, dur, when, vol=0.06){
+  const osc=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  osc.type='sine';
+  osc.frequency.setValueAtTime(freq, when);
+  
+  const lfo = audioCtx.createOscillator();
+  const lfoG = audioCtx.createGain();
+  lfo.frequency.value = 5; 
+  lfoG.gain.value = 2; 
+  lfo.connect(lfoG); lfoG.connect(osc.frequency);
+  lfo.start(when);
+  
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(vol, when+0.15);
+  g.gain.setValueAtTime(vol, when+dur-0.15);
+  g.gain.linearRampToValueAtTime(0, when+dur);
+  
+  osc.connect(g); g.connect(audioCtx.destination);
+  osc.start(when); osc.stop(when+dur);
+  lfo.stop(when+dur);
+}
+
+function playSparkleSound(){
+  if(!musicOn || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  const notes = [1046.50, 1318.51, 1567.98]; 
+  notes.forEach((freq, i) => {
+    playFlute(freq, 0.2, now + i*0.05, 0.015);
+  });
+}
+
+function playRandomPattern(){
+  if(!musicOn || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  
+  // Pilih melodi dan skala secara rawak
+  const scaleIdx = Math.floor(Math.random() * scales.length);
+  const melodyIdx = Math.floor(Math.random() * melodies.length);
+  
+  const scale = scales[scaleIdx];
+  const melody = melodies[melodyIdx];
+  const tempo = 0.65; // Laju perlahan, tak rushing
+
+  // Main melodi utama (Sitar)
+  melody.forEach((idx, i) => {
+    const f = scale[idx % scale.length] * 2; 
+    playPluck(f, now + i*tempo, 0.1);
+    
+    // Sesekali ada seruling
+    if (i % 4 === 0) {
+      playFlute(scale[idx] * 1.5, tempo*2.5, now + i*tempo, 0.03);
+    }
+  });
+  
+  // Bunyi bass bawah
+  for(let i=0;i<4;i++){
+    playPluck(scale[0]/2, now + i*tempo*4, 0.06);
+  }
+  
+  // Jadualkan corak seterusnya
+  musicTimer = setTimeout(playRandomPattern, melody.length*tempo*1000);
+}
+
+soundBtn.onclick=()=>{
+  initAudio();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  musicOn=!musicOn;
+  soundBtn.textContent=musicOn?'🔊':'🔇';
+  soundBtn.classList.toggle('active',musicOn);
+  if(musicOn){playRandomPattern();}
+  else{clearTimeout(musicTimer);}
+};
+
+document.addEventListener('click',function once(){
+  initAudio();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  if(musicOn && !musicTimer) playRandomPattern();
+  document.removeEventListener('click',once);
+},{once:true});
+
+/* ===== SPARKLE CLICK ===== */
+document.addEventListener('click',e=>{
+  for(let i=0;i<6;i++){
+    const s=document.createElement('div');
+    s.className='sparkle';
+    s.textContent='✦';
+    s.style.left=(e.clientX+ (Math.random()-0.5)*40)+'px';
+    s.style.top=(e.clientY+ (Math.random()-0.5)*40)+'px';
+    s.style.fontSize=(8+Math.random()*10)+'px';
+    s.style.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),3000);
+  }
+});
+</script>
+</body>
+</html>
