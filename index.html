@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zaki & Puteri Wedding Invitation</title>
-    <!-- Google Fonts: Playfair Display (Serif Mewah), Great Vibes (Skrip), Montserrat (Clean) -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         /* --- ROYAL MAROON & GOLD THEME --- */
@@ -13,7 +12,6 @@
             --text-main: #5A1E22; /* Deep Maroon */
             --text-sub: #7A5B42;
             --accent-gold: #D4AF37; /* Metallic Gold */
-            --accent-gold-light: #F3E5AB;
             --card-bg: #FFFFFF;
             --shadow: 0 25px 60px rgba(90, 30, 34, 0.15);
         }
@@ -147,7 +145,6 @@
             z-index: 10;
             position: relative;
         }
-        /* Gold Glare Effect */
         .scene::after {
             content: '';
             position: absolute;
@@ -161,7 +158,7 @@
             opacity: 0;
             transition: opacity 0.5s;
             mix-blend-mode: overlay;
-            transform: translateZ(1px); /* Bring to front of 3D */
+            transform: translateZ(1px);
         }
         .scene:hover::after {
             opacity: 1;
@@ -194,7 +191,6 @@
             background-position: center;
             background-repeat: no-repeat;
             border: 6px solid var(--card-bg);
-            /* Inner gold border */
             outline: 2px solid var(--accent-gold);
             outline-offset: -12px;
         }
@@ -226,14 +222,35 @@
             display: block;
             margin: 5px 0;
         }
+        
+        /* KEMAS KINI: Tarikh, Hari & Masa */
+        .date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .day-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: -5px;
+        }
         .date-text {
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.95rem;
+            font-weight: 600;
             letter-spacing: 3px;
-            margin-bottom: 25px;
             text-transform: uppercase;
+            color: var(--text-main);
+        }
+        .time-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
             color: var(--text-sub);
+            margin-top: 5px;
         }
 
         /* --- COUNTDOWN --- */
@@ -291,21 +308,17 @@
             text-transform: uppercase;
         }
         .btn-rsvp { 
-            background: linear-gradient(135deg, #D4AF37, #B8860B); /* Gold Gradient */
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
             color: #fff; 
             box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
         }
-        .btn-rsvp:hover {
-            box-shadow: 0 15px 25px rgba(212, 175, 55, 0.5);
-        }
+        .btn-rsvp:hover { box-shadow: 0 15px 25px rgba(212, 175, 55, 0.5); }
         .btn-maps, .btn-calendar { 
             background-color: transparent; 
             border: 1px solid var(--accent-gold); 
             color: var(--text-main); 
         }
-        .btn-maps:hover, .btn-calendar:hover {
-            background-color: rgba(212, 175, 55, 0.1);
-        }
+        .btn-maps:hover, .btn-calendar:hover { background-color: rgba(212, 175, 55, 0.1); }
         .btn-action:hover { transform: translateY(-3px); }
 
         /* --- BACKGROUND PARTICLES --- */
@@ -355,7 +368,13 @@
                 <span>&</span>
                 Puteri Nurlydia
             </div>
-            <div class="date-text">27 December 2026</div>
+            
+            <!-- BAHAGIAN HARI, TARIKH & MASA YANG BARU -->
+            <div class="date-container">
+                <div class="day-text">Sunday</div>
+                <div class="date-text">27 December 2026</div>
+                <div class="time-text">11:00 AM - 5:00 PM</div>
+            </div>
 
             <div class="countdown-container" id="countdown">
                 <div class="countdown-box"><span id="days">00</span><small>Days</small></div>
@@ -365,15 +384,12 @@
             </div>
 
             <div class="action-buttons">
-                <!-- WhatsApp RSVP (Bilingual) -->
                 <a href="https://wa.me/6587844828?text=Assalamualaikum%20%2F%20Hello%20Rahim.%20Saya%20ingin%20mengesahkan%20kehadiran%20ke%20majlis%20Zaki%20%26%20Puteri.%20(I%20would%20like%20to%20RSVP%20for%20Zaki%20%26%20Puteri's%20wedding)." target="_blank" class="btn-action btn-rsvp">
                     💬 RSVP (WhatsApp)
                 </a>
-                <!-- Google Maps -->
                 <a href="https://maps.google.com/?q=706+Clementi+West+Street+2+Singapore+120706" target="_blank" class="btn-action btn-maps">
                     📍 View Location
                 </a>
-                <!-- Add to Calendar -->
                 <button onclick="downloadICS()" class="btn-action btn-calendar">
                     📅 Save the Date
                 </button>
@@ -390,9 +406,7 @@
         let scrollSpeed = 0.8; 
 
         function openInvitation() {
-            // Trigger Confetti
             fireConfetti();
-
             document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('splash').style.display = 'none';
@@ -401,11 +415,10 @@
                 
                 initParticles();
                 playLoopAudio();
-                setTimeout(startAutoScroll, 2500); // Start scroll slightly later for confetti effect
+                setTimeout(startAutoScroll, 2500); 
             }, 800);
         }
 
-        // --- AUTO SCROLL LOGIC ---
         function startAutoScroll() {
             autoScrollActive = true;
             let scrollPos = window.scrollY;
@@ -456,7 +469,6 @@
             setTimeout(() => card.style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 500);
         });
 
-        // --- COUNTDOWN ---
         const targetDate = new Date("December 27, 2026 11:00:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
@@ -469,67 +481,50 @@
             document.getElementById("secs").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        // --- WEB AUDIO API (MEGAH & CERIA) ---
         function playLoopAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             isAudioPlaying = true;
             document.getElementById('audioBtn').innerHTML = '🔊';
 
             const masterGain = audioCtx.createGain();
             masterGain.connect(audioCtx.destination);
-            masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime); // Volume tetap
+            masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
 
-            // Melodi C Major / A Minor Megah
-            const notesC = [261.63, 329.63, 392.00, 523.25]; // C E G C
-            const notesG = [196.00, 246.94, 293.66, 392.00]; // G B D G
-            const notesAm = [220.00, 261.63, 329.63, 440.00]; // A C E A
-            const notesF = [174.61, 220.00, 261.63, 349.23]; // F A C F
+            const notesC = [261.63, 329.63, 392.00, 523.25];
+            const notesG = [196.00, 246.94, 293.66, 392.00];
+            const notesAm = [220.00, 261.63, 329.63, 440.00];
+            const notesF = [174.61, 220.00, 261.63, 349.23];
 
             let loopStep = 0;
-            
             function playNextSequence() {
                 if (!isAudioPlaying) return;
                 let time = audioCtx.currentTime;
-                
-                // Progressions: C -> G -> Am -> F (Sangat klasik dan megah)
                 let seq = [notesC, notesG, notesAm, notesF][loopStep % 4];
-
-                // Arpeggio naik turun sedikit untuk bunyi harp yang kaya
                 seq.forEach(freq => { playTone(freq, time, 1.5, masterGain); time += 0.25; });
                 seq.reverse().forEach(freq => { playTone(freq, time, 1.5, masterGain); time += 0.25; });
-
                 loopStep++;
             }
-
             playNextSequence(); 
-            loopInterval = setInterval(playNextSequence, 2000); // Chord bertukar setiap 2 saat
+            loopInterval = setInterval(playNextSequence, 2000); 
         }
 
         function playTone(freq, startTime, duration, masterGain) {
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
-            
-            // Tukar ke 'sine' untuk bunyi loceng/harp yang lebih lembut tapi mewah
             osc.type = 'sine'; 
             osc.frequency.setValueAtTime(freq, startTime);
-            
-            // Sedikit vibrato untuk bunyi yang lebih hidup
             const lfo = audioCtx.createOscillator();
             const lfoGain = audioCtx.createGain();
             lfo.frequency.value = 5;
             lfoGain.gain.value = 2;
             lfo.connect(lfoGain);
             lfoGain.connect(osc.frequency);
-            
             gainNode.gain.setValueAtTime(0, startTime);
             gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.02);
             gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-            
             osc.connect(gainNode);
             gainNode.connect(masterGain);
-            
             osc.start(startTime);
             osc.stop(startTime + duration);
             lfo.start(startTime);
@@ -565,7 +560,6 @@
             document.body.removeChild(link);
         }
 
-        // --- GOLD DUST PARTICLES ---
         function initParticles() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -580,22 +574,21 @@
                 constructor() {
                     this.x = Math.random() * width;
                     this.y = Math.random() * height - height;
-                    this.size = Math.random() * 3 + 1; // Kecil dan halus
-                    this.speedY = Math.random() * 0.8 + 0.3; // Jatuh perlahan
+                    this.size = Math.random() * 3 + 1;
+                    this.speedY = Math.random() * 0.8 + 0.3;
                     this.speedX = Math.random() * 1 - 0.5;
                     this.opacity = Math.random() * 0.8 + 0.2;
                     this.twinkle = Math.random() * Math.PI;
                 }
                 update() {
                     this.y += this.speedY;
-                    this.x += Math.sin(this.y / 50) * 0.5; // Melayang
+                    this.x += Math.sin(this.y / 50) * 0.5;
                     this.twinkle += 0.05;
                     if (this.y > height) { this.y = -10; this.x = Math.random() * width; }
                 }
                 draw() {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    // Warna Emas dengan opacity berkelip
                     ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity * Math.abs(Math.sin(this.twinkle))})`;
                     ctx.fill();
                 }
@@ -609,7 +602,6 @@
             animate();
         }
 
-        // --- CONFETTI BOOM ---
         function fireConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
@@ -617,7 +609,7 @@
             canvas.height = window.innerHeight;
             
             let confetti = [];
-            const colors = ['#D4AF37', '#F3E5AB', '#B8860B', '#FFFFFF']; // Gold shades
+            const colors = ['#D4AF37', '#F3E5AB', '#B8860B', '#FFFFFF'];
 
             for (let i = 0; i < 150; i++) {
                 confetti.push({
@@ -641,11 +633,10 @@
                 confetti.forEach(c => {
                     if (c.life <= 0) return;
                     active = true;
-                    
                     c.x += c.vx;
                     c.y += c.vy;
-                    c.vy += 0.5; // Gravity
-                    c.vx *= 0.98; // Drag
+                    c.vy += 0.5;
+                    c.vx *= 0.98;
                     c.rot += c.rotSpeed;
                     c.life -= 0.01;
 
