@@ -17,12 +17,22 @@
             --shadow: 0 25px 60px rgba(90, 30, 34, 0.15);
         }
 
-        body.dark-mode {
+        /* Default kepada Dark Mode */
+        body {
             --bg-color: #1A0F10; /* Very Dark Maroon/Black */
             --text-main: #FDFBF7; /* Cream */
             --text-sub: #D4AF37; /* Gold */
             --card-bg: #2A1618;
             --shadow: 0 25px 60px rgba(0,0,0,0.8);
+        }
+
+        /* Light Mode Class */
+        body.light-mode {
+            --bg-color: #FDFBF7;
+            --text-main: #5A1E22;
+            --text-sub: #7A5B42;
+            --card-bg: #FFFFFF;
+            --shadow: 0 25px 60px rgba(90, 30, 34, 0.15);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -94,7 +104,7 @@
         }
         .control-btn:hover { transform: scale(1.1); }
 
-        /* --- 3D CARD SCENE (DIPERBETULKAN) --- */
+        /* --- 3D CARD SCENE --- */
         .scene {
             width: 100%; max-width: 340px; height: 520px;    
             perspective: 1200px; margin-top: 60px; margin-bottom: 30px; z-index: 10;
@@ -103,19 +113,28 @@
 
         .card-container {
             width: 100%; height: 100%; position: relative;
-            transition: transform 0.8s ease-in-out; /* Transisi pusing */
-            transform-style: preserve-3d; /* WAJIB */
+            transform-style: preserve-3d;
             cursor: pointer;
+            /* Animasi berputar automatik */
+            animation: autoRotate 12s linear infinite;
+            transition: transform 0.5s ease-out; /* Untuk kesan tilt */
         }
         
-        /* Bila JS tambah class ni, ia pusing */
-        .card-container.flipped {
-            transform: rotateY(180deg);
+        /* Keyframes untuk putaran 360 darjah */
+        @keyframes autoRotate {
+            0% { transform: rotateY(0deg) rotateX(5deg); }
+            50% { transform: rotateY(180deg) rotateX(5deg); }
+            100% { transform: rotateY(360deg) rotateX(5deg); }
+        }
+
+        /* Hentikan auto-rotate bila hover (untuk kesan 3D interaktif) */
+        .card-container:hover {
+            animation-play-state: paused;
         }
         
         .card-face {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            -webkit-backface-visibility: hidden; backface-visibility: hidden; /* WAJIB */
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
             border-radius: 12px;
             box-shadow: var(--shadow);
             background-size: cover; background-position: center; background-repeat: no-repeat;
@@ -125,13 +144,13 @@
             background-color: #333;
         }
         
-        /* Kesan Kilau (Gold Glare) menggunakan Pseudo-element pada gambar depan */
-        .card-front::before {
+        /* Kesan Kilau (Gold Glare) pada gambar */
+        .card-face::before {
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,215,0,0.4) 50%, rgba(255,255,255,0) 100%);
             transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
         }
-        .card-container:hover .card-front::before { left: 125%; }
+        .card-container:hover .card-face::before { left: 125%; }
 
         .card-front { 
             background-image: url('depan.jpg'); 
@@ -240,12 +259,12 @@
     <div id="main-content">
         <div class="top-controls">
             <button class="control-btn" id="audioBtn" onclick="toggleAudio()" title="Play Music">🎵</button>
-            <button class="control-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+            <button class="control-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">☀️</button>
         </div>
 
         <div class="scene" id="scene">
-            <!-- Klik pada container -->
-            <div class="card-container" id="card" onclick="flipCard(event)">
+            <!-- Kad container dengan auto-rotate -->
+            <div class="card-container" id="card">
                 <div class="card-face card-front"></div>
                 <div class="card-face card-back"></div>
             </div>
@@ -321,37 +340,39 @@
             window.addEventListener(evt, () => { autoScrollActive = false; }, { passive: true });
         });
 
+        // --- THEME TOGGLE (Default is Dark Mode) ---
         function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
+            // Toggle class 'light-mode'
+            document.body.classList.toggle('light-mode');
+            
             const btn = document.getElementById('themeBtn');
-            btn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        }
-
-        // --- LOGIK FLIP DIPERBETULKAN ---
-        const card = document.getElementById('card');
-        let isFlipped = false;
-
-        function flipCard(event) {
-            if(event) event.stopPropagation();
-            isFlipped = !isFlipped;
-            card.classList.toggle('flipped');
-            card.style.transform = ''; // Reset tilt bila pusing
-        }
-
-        document.getElementById('scene').addEventListener('mousemove', (e) => {
-            if(isFlipped) return;
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-            if(!card.classList.contains('flipped')) {
-                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            // Jika ada class 'light-mode', tukar ikon ke bulan, jika tiada (dark mode) tukar ke matahari
+            if (document.body.classList.contains('light-mode')) {
+                btn.innerHTML = '🌙'; // Ikon bulan untuk switch ke dark mode
+            } else {
+                btn.innerHTML = '☀️'; // Ikon matahari untuk switch ke light mode
             }
+        }
+
+        // --- 3D TILT EFFECT (Bila Hover) ---
+        const card = document.getElementById('card');
+        const scene = document.getElementById('scene');
+
+        scene.addEventListener('mousemove', (e) => {
+            // Kesan ini hanya aktif bila tetikus berada di atas kad
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 20;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 20;
+            
+            // Tambah rotateX dan rotateY pada transform sedia ada
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            // Pastikan animation-play-state kekal paused
+            card.style.animationPlayState = 'paused';
         });
 
-        document.getElementById('scene').addEventListener('mouseleave', () => {
-            if(isFlipped) return;
+        scene.addEventListener('mouseleave', () => {
+            // Kembalikan transform asal supaya animation boleh ambil alih
             card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            card.style.transition = 'transform 0.5s ease';
-            setTimeout(() => card.style.transition = 'transform 0.8s ease-in-out', 500);
+            card.style.animationPlayState = 'running'; // Sambung balik auto-rotate
         });
 
         // --- COUNTDOWN ---
